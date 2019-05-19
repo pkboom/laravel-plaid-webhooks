@@ -16,7 +16,6 @@
     "require": {
         "php": "^7.1",
         "orchestra/testbench": "^3.8",
-        "stripe/stripe-php": "^6.35",
         "symfony/var-dumper": "^4.2"
     },
     "require-dev": {
@@ -42,10 +41,7 @@
         "laravel": {
             "providers": [
                 "Pkboom\\PlaidWebhooks\\PlaidWebhooksServiceProvider"
-            ],
-            "aliases": {
-                "PlaidWebhooks": "Pkboom\\PlaidWebhooks\\Facade\\PlaidWebhooks"
-            }
+            ]
         }
     }
 }

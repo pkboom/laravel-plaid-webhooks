@@ -3,7 +3,7 @@
 namespace Pkboom\PlaidWebhooks;
 
 use Illuminate\Database\Eloquent\Model;
-use Tests\DummyJob;
+use Pkboom\PlaidWebhooks\Exceptions\WebhookFailed;
 
 class PlaidWebhookCall extends Model
 {
@@ -11,12 +11,16 @@ class PlaidWebhookCall extends Model
 
     protected $casts = [
         'payload' => 'array',
+        'error' => 'array',
+        'exception' => 'array',
     ];
 
     public function process()
     {
-        $this->clearException();
-        
+        if ($this->type === '') {
+            throw WebhookFailed::missingType($this->id);
+        }
+
         event("plaid-webhooks::{$this->type}", $this);
 
         $jobClass = $this->determineJobClass($this->type);
@@ -30,9 +34,7 @@ class PlaidWebhookCall extends Model
 
     public function determineJobClass($eventType)
     {
-        $jobConfigType = str_replace('.', '_', $eventType);
-
-        return config("plaid-webhooks.jobs.{$jobConfigType}", '');
+        return config("plaid-webhooks.jobs.{$eventType}", '');
     }
 
     public function saveException(\Exception $exception)
@@ -42,11 +44,6 @@ class PlaidWebhookCall extends Model
             'message' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
         ];
-    }
-
-    public function clearException()
-    {
-        $this->exception = null;
 
         $this->save();
 

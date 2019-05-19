@@ -17,6 +17,7 @@ class CreatePlaidWebhookCallsTable extends Migration
 
             $table->string('type')->nullable();
             $table->text('payload')->nullable();
+            $table->text('error')->nullable();
             $table->text('exception')->nullable();
 
             $table->timestamps();

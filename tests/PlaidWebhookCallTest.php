@@ -25,6 +25,7 @@ class PlaidWebhookCallTest extends TestCase
         $this->plaidWebhookCall = PlaidWebhookCall::create([
             'type' => 'my.type',
             'payload' => ['name' => 'value'],
+            'error' => ['name' => 'value'],
         ]);
     }
 
@@ -78,18 +79,8 @@ class PlaidWebhookCallTest extends TestCase
     public function save_an_exception()
     {
         $this->plaidWebhookCall->saveException(new Exception('my message', 123));
-
+ 
         $this->assertEquals(123, $this->plaidWebhookCall->exception['code']);
         $this->assertEquals('my message', $this->plaidWebhookCall->exception['message']);
-    }
-
-    /** @test */
-    public function clear_the_exception()
-    {
-        $this->plaidWebhookCall->saveException(new Exception('my message', 123));
-
-        $this->plaidWebhookCall->process();
-
-        $this->assertNull($this->plaidWebhookCall->exception);
     }
 }
